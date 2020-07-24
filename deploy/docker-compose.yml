@@ -1,0 +1,27 @@
+# 配置文件版本
+version: "3"
+
+
+# 管理的服务
+services:
+
+    work:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: centos7-py3-scrapyd:latest
+        container_name: work
+        # ports:
+        #     - 6800:6800
+        volumes:
+            - ${WORKDIR}:/root/work:rw
+            - ${LOGDIR}:/var/log:rw
+        working_dir: /root/work
+        privileged: true
+        logging:
+            driver: json-file
+            options:
+                max-size: 200m
+                max-file: "3"
+        command: ["/usr/sbin/init"]
+        restart: always
