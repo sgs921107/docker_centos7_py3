@@ -72,8 +72,8 @@ ENV PATH=$PATH:/usr/local/python3/bin
 ADD ./requirements.txt /tmp/requirements.txt
  
 # 安装python爬虫以来库
-RUN pip --no-cache-dir install -r /tmp/requirements.txt \
-    && pip2 --no-cache-dir install urwid speedometer
+RUN pip install --no-cache-dir -r /tmp/requirements.txt \
+    && pip2 install --no-cache-dir urwid speedometer
  
 # 配置scrapyd
 RUN sed -i "s/127.0.0.1/0.0.0.0/g" /usr/local/python3/lib/python3.7/site-packages/scrapyd/default_scrapyd.conf \

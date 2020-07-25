@@ -1,6 +1,7 @@
 gevent
 requests[security]
-selenium pymysql
+selenium
+pymysql
 redis-py-cluster
 pymongo
 scrapy

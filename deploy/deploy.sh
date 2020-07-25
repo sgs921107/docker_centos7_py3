@@ -17,7 +17,7 @@ CONTAINER=work
 
 # 2.是否指定pip的下载源 不指定置为空
 # pip_repository=
-pip_repository=https://pypi.tuna.tsinghua.edu.cn/simple
+pip_repository=https://mirrors.aliyun.com/pypi/simple/
 
 # 给用户添加work命令,快捷进入开发环境  /home/$user/.bashrc
 bashrc=/etc/bashrc
