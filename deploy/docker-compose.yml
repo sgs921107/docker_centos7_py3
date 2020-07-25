@@ -9,14 +9,14 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: centos7-py3-scrapyd:latest
-        container_name: work
+        image: ${IMAGE:-centos7-py3}:latest
+        container_name: ${CONTAINER:-work}
         # ports:
         #     - 6800:6800
         volumes:
             - ${WORKDIR}:/root/work:rw
             - ${LOGDIR}:/var/log:rw
-        working_dir: /root/work
+        working_dir: /root/${CONTAINER:-work}
         privileged: true
         logging:
             driver: json-file

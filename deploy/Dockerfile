@@ -30,12 +30,13 @@ RUN set -ex \
     && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
  
 # 支持中文
-RUN yum install -y kde-l10n-Chinese python-devel libevent-devel \
+RUN set -ex \
+    &&yum install -y kde-l10n-Chinese python-devel libevent-devel \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
 RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
 ENV LC_ALL zh_CN.UTF-8
 
-# 配置rsyslog
+# 配置rsyslog 配置当未使用所有权限启动容器时仍可以收集日志
 RUN set -ex \
     && mv /etc/rsyslog.d/listen.conf /etc/rsyslog.d/listen.conf.backup \
     && sed -i 's/^$ModLoad imjournal/# $ModLoad imjournal/' /etc/rsyslog.conf \
@@ -68,14 +69,11 @@ RUN set -ex \
  
 # 添加python3的环境变量
 ENV PATH=$PATH:/usr/local/python3/bin
+ADD ./requirements.txt /tmp/requirements.txt
  
 # 安装python爬虫以来库
-RUN pip --no-cache-dir install gevent requests[security] selenium pymysql redis-py-cluster pymongo \
-        scrapy scrapyd scrapyd-client scrapy-redis scrapy-splash DBUtils xmltodict lxml beautifulsoup4 \
-        pyquery ConcurrentLogHandler scrapydweb elasticsearch celery environs circus circus-web chaussette \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple \
-    && pip2 --no-cache-dir install urwid speedometer \
-        -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip --no-cache-dir install -r /tmp/requirements.txt \
+    && pip2 --no-cache-dir install urwid speedometer
  
 # 配置scrapyd
 RUN sed -i "s/127.0.0.1/0.0.0.0/g" /usr/local/python3/lib/python3.7/site-packages/scrapyd/default_scrapyd.conf \

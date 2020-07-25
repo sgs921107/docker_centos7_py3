@@ -1,0 +1,23 @@
+gevent
+requests[security]
+selenium pymysql
+redis-py-cluster
+pymongo
+scrapy
+scrapyd
+scrapyd-client
+scrapy-redis
+scrapy-splash
+DBUtils
+xmltodict
+lxml
+beautifulsoup4
+pyquery
+ConcurrentLogHandler
+scrapydweb
+elasticsearch
+celery
+environs
+circus
+circus-web
+chaussette

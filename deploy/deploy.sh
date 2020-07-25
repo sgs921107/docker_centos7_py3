@@ -12,13 +12,15 @@
 # 1.docker-compose.yml依赖配置
 WORKDIR=/home/sgs/work
 LOGDIR=./logs
+IMAGE=centos7-py3
+CONTAINER=work
 
-# 2.是否指定pip的下载源
-# pip_repository=https://pypi.tuna.tsinghua.edu.cn/simple
-pip_repository=
+# 2.是否指定pip的下载源 不指定置为空
+# pip_repository=
+pip_repository=https://pypi.tuna.tsinghua.edu.cn/simple
 
-# 给用户添加work命令,快捷进入开发环境
-bashrc=/home/sgs/.bashrc
+# 给用户添加work命令,快捷进入开发环境  /home/$user/.bashrc
+bashrc=/etc/bashrc
 
 # ==========================配置结束==================================
 
@@ -39,6 +41,8 @@ fi
 
 echo "WORKDIR=$WORKDIR
 LOGDIR=$LOGDIR
+IMAGE=$IMAGE
+CONTAINER=$CONTAINER
 " > .env
 
 # 启动服务
