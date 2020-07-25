@@ -52,11 +52,16 @@ then
     sed -i "s#pip2 install#pip2 install -i $pip_repository#g" $dockerfile
 fi
 docker-compose up -d
+# 如果部署成功,添加快捷命令
+if [ $? = 0 ]
+then
+    # 追加进入开发环境的快捷方式
+    echo "alias work='docker exec -it work /bin/bash'" >> $bashrc
+    echo "deploy succeed, please manually specify the command: source $bashrc"
+else
+    echo "deploy failed!!!"
+fi
 if [ -n "$pip_repository" ]
 then
     git checkout $dockerfile
 fi
-
-# 追加进入开发环境的快捷方式
-echo "alias work='docker exec -it work /bin/bash'" >> $bashrc
-source $bashrc
