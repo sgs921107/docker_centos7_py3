@@ -16,7 +16,7 @@ services:
         volumes:
             - ${WORKDIR}:/root/work:rw
             - ${LOGDIR}:/var/log:rw
-        working_dir: /root/${CONTAINER:-work}
+        working_dir: /root/work
         privileged: true
         logging:
             driver: json-file
