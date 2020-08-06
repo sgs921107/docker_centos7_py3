@@ -9,7 +9,7 @@ MAINTAINER sgs # 指定作者信息
 RUN set -ex \
     # 预安装所需组件
     && yum install -y wget tar unzip libffi-devel zlib-devel bzip2-devel openssl-devel ncurses-devel \
-    sqlite-devel readline-devel tk-devel gcc make initscripts vim cronie lrzsz rsyslog \
+    sqlite-devel readline-devel tk-devel gcc make initscripts vim cronie lrzsz rsyslog git \
     # && wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz \
     && wget https://mirrors.huaweicloud.com/python/3.7.4/Python-3.7.4.tgz \
     && tar -zxvf Python-3.7.4.tgz \
@@ -51,7 +51,7 @@ RUN set -ex \
     # 配置默认为python3
     && ln -s /usr/local/python3/bin/python3.7 /usr/bin/python \
     && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip \
-    && pip install --upgrade pip
+    && pip install -i https://mirrors.aliyun.com/pypi/simple/ -i https://mirrors.aliyun.com/pypi/simple/ --upgrade pip
  
 # 修复因修改python版本导致yum失效问题
 RUN set -ex \
@@ -73,11 +73,9 @@ ADD ./requirements.txt /tmp/requirements.txt
  
 # 安装python爬虫以来库
 RUN pip install --no-cache-dir -r /tmp/requirements.txt \
-    && pip2 install --no-cache-dir urwid speedometer
- 
-# 配置scrapyd
-RUN sed -i "s/127.0.0.1/0.0.0.0/g" /usr/local/python3/lib/python3.7/site-packages/scrapyd/default_scrapyd.conf \
-    && sed -i "s/max_proc_per_cpu = 4/max_proc_per_cpu = 30/g" /usr/local/python3/lib/python3.7/site-packages/scrapyd/default_scrapyd.conf
+    && pip2 install --no-cache-dir urwid speedometer \
+    && pip --no-cache-dir install -U git+https://github.com/scrapy/scrapyd.git \
+    && pip --no-cache-dir install -U git+https://github.com/my8100/scrapydweb.git
  
 # 配置vim
 RUN echo "alias vi=vim" >> /root/.bashrc
@@ -87,6 +85,7 @@ RUN mkdir /scrapyd_work
 WORKDIR /scrapyd_work
  
 EXPOSE 6800
+EXPOSE 5000
  
-CMD ["/bin/bash", "-c", "rsyslogd && crond && scrapyd"]
+CMD ["/bin/bash", "-c", "rsyslogd | crond | `logparser -dir /scrapyd_work/logs` | rm twistd.pid | scrapyd"]
 
