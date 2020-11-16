@@ -11,16 +11,9 @@
 
 # 1.docker-compose.yml依赖配置
 WORKDIR=/home/sgs/work
-LOGDIR=./logs
+LOGDIR=/var/logs/work
 IMAGE=centos7-py3
 CONTAINER=work
-
-# 2.是否指定pip的下载源 不指定置为空
-# pip_repository=
-pip_repository=https://mirrors.aliyun.com/pypi/simple/
-
-# 给用户添加work命令,快捷进入开发环境  /home/$user/.bashrc
-bashrc=/etc/bashrc
 
 # ==========================配置结束==================================
 
@@ -28,16 +21,7 @@ bashrc=/etc/bashrc
 install_docker_script=./install_docker.sh
 dockerfile=./Dockerfile
 
-# 检查/安装docker和docker-compose
-if [ -n "$pip_repository" ]
-then
-    sed -i "s#pip install#pip install -i $pip_repository#g" $install_docker_script
-fi
-sh $install_docker_script
-if [ -n "$pip_repository" ]
-then
-    git checkout $install_docker_script
-fi
+sh $install_docker_script || { echo "部署失败: 安装docker失败,请检查是否缺少依赖并重新运行部署脚本"; exit 1; }
 
 echo "WORKDIR=$WORKDIR
 LOGDIR=$LOGDIR
@@ -45,23 +29,15 @@ IMAGE=$IMAGE
 CONTAINER=$CONTAINER
 " > .env
 
-# 启动服务
-if [ -n "$pip_repository" ]
-then
-    sed -i "s#pip install#pip install -i $pip_repository#g" $dockerfile
-    sed -i "s#pip2 install#pip2 install -i $pip_repository#g" $dockerfile
-fi
-docker-compose up -d
+docker-compose build || { echo '部署失败: 创建镜像失败,请重新运行部署脚本'; exit 1; }
+
+
 # 如果部署成功,添加快捷命令
-if [ $? = 0 ]
+if docker-compose up -d;
 then
-    # 追加进入开发环境的快捷方式
-    echo "alias work='docker exec -it work /bin/bash'" >> $bashrc
-    echo "deploy succeed, please manually specify the command: source $bashrc"
+    echo "deploy succeed"
+    echo "you can add a alias cmd to your bashrc file and then source this file"
+    echo "for example: echo \"alias work='docker exec -it work /bin/bash'\" >> /etc/bashrc && source /etc/bashrc"
 else
     echo "deploy failed!!!"
-fi
-if [ -n "$pip_repository" ]
-then
-    git checkout $dockerfile
 fi

@@ -5,11 +5,15 @@
 # 进入容器：docker exec -it scrapyd /bin/bash
 ##############################################
 FROM centos:7.6.1810
-MAINTAINER sgs # 指定作者信息
+# 指定作者信息
+MAINTAINER sgs
+# 配置pip源
+COPY ./pip.conf /root/.pip/pip.conf
 RUN set -ex \
     # 预安装所需组件
-    && yum install -y wget tar unzip libffi-devel zlib-devel bzip2-devel openssl-devel ncurses-devel \
-    sqlite-devel readline-devel tk-devel gcc make initscripts vim cronie lrzsz rsyslog git \
+    && yum install -y wget tar unzip libffi-devel librdkafka-devel zlib-devel bzip2-devel \
+        openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make initscripts \
+        vim cronie lrzsz rsyslog git net-tools lsof telnet nload iftop \
     # && wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz \
     && wget https://mirrors.huaweicloud.com/python/3.7.4/Python-3.7.4.tgz \
     && tar -zxvf Python-3.7.4.tgz \
@@ -45,13 +49,14 @@ RUN set -ex \
  
 # 设置默认为python3
 RUN set -ex \
+    && pip install --upgrade pip \
     # 删除旧版本python环境变量
     && rm -f /usr/bin/python \
     && rm -f /usr/bin/pip \
     # 配置默认为python3
     && ln -s /usr/local/python3/bin/python3.7 /usr/bin/python \
     && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip \
-    && pip install -i https://mirrors.aliyun.com/pypi/simple/ -i https://mirrors.aliyun.com/pypi/simple/ --upgrade pip
+    && pip install --upgrade pip
  
 # 修复因修改python版本导致yum失效问题
 RUN set -ex \
@@ -69,17 +74,14 @@ RUN set -ex \
  
 # 添加python3的环境变量
 ENV PATH=$PATH:/usr/local/python3/bin
-ADD ./requirements.txt /tmp/requirements.txt
+COPY ./requirements.txt /tmp/requirements.txt
  
 # 安装python爬虫以来库
-RUN pip install --no-cache-dir -r /tmp/requirements.txt \
-    && pip2 install --no-cache-dir urwid speedometer \
-    && pip --no-cache-dir install -U git+https://github.com/scrapy/scrapyd.git \
-    && pip --no-cache-dir install -U git+https://github.com/my8100/scrapydweb.git
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
  
 # 配置vim
 RUN echo "alias vi=vim" >> /root/.bashrc
-ADD ./vimrc /root/.vimrc
+COPY ./vimrc /root/.vimrc
  
 RUN mkdir /scrapyd_work
 WORKDIR /scrapyd_work
@@ -88,4 +90,3 @@ EXPOSE 6800
 EXPOSE 5000
  
 CMD ["/bin/bash", "-c", "rsyslogd | crond | `logparser -dir /scrapyd_work/logs` | rm twistd.pid | scrapyd"]
-

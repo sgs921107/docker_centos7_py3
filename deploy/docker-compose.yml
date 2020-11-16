@@ -11,8 +11,6 @@ services:
             dockerfile: Dockerfile
         image: ${IMAGE:-centos7-py3}:latest
         container_name: ${CONTAINER:-work}
-        # ports:
-        #     - 6800:6800
         volumes:
             - ${WORKDIR}:/root/work:rw
             - ${LOGDIR}:/var/log:rw
@@ -25,3 +23,11 @@ services:
                 max-file: "3"
         command: ["/usr/sbin/init"]
         restart: always
+        networks:
+            - work
+
+
+networks:
+    work:
+        ipam:
+            driver: default

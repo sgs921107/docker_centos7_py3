@@ -6,31 +6,11 @@
 #########################################################################
 #!/bin/bash
 
-
-<<!
-判断服务是否已安装
-参数    是否必须
-服务名  是
-返回值  1/0(是否存在)
-!
-function is_exist(){
-    ret=`$1 --version`
-    echo $ret
-    if [ -n "$ret" ]
-    then
-        return 1
-    else
-        return 0
-    fi
-}
-                                        
-
 # 移除旧版本docker
 # yum remove docker  docker-common docker-selinux docker-engine
 
 # 判断docker是否已安装
-is_exist docker
-if [ $? = 0 ]
+if ! docker --version
 then
     # 更新yum
     yum update -y
@@ -50,18 +30,15 @@ systemctl start docker
 systemctl enable docker
 
 # 判断docker-compose是否已安装
-is_exist docker-compose
-if [ $? = 0 ]
+if ! docker-compose --version
 then
-    # 安装docker-compose
-    yum -y install epel-release
-    yum -y install python-pip
-    yum -y install python-devel
+    # 安装docker-compose依赖
+    yum -y install libffi-devel epel-release openssl-devel python-pip python-devel
     yum -y groupinstall 'Development Tools'
     
     yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
+    pip install --upgrade pip
     # 安装docker-compose  
     pip install --no-cache-dir docker-compose 
 fi
-
 
