@@ -49,7 +49,6 @@ RUN set -ex \
  
 # 设置默认为python3
 RUN set -ex \
-    && pip install --upgrade pip \
     # 删除旧版本python环境变量
     && rm -f /usr/bin/python \
     && rm -f /usr/bin/pip \
