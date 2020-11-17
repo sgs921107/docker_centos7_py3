@@ -10,10 +10,10 @@
 # ==========================开始配置==================================
 
 # 1.docker-compose.yml依赖配置
-WORKDIR=/home/sgs/work
-LOGDIR=/var/logs/work
+WORKDIR=/home/sgs/work/spiderPy3
+LOGDIR=/var/logs/spiderPy3
 IMAGE=centos7-py3
-CONTAINER=work
+CONTAINER=spiderPy3
 
 # ==========================配置结束==================================
 
@@ -26,8 +26,7 @@ sh $install_docker_script || { echo "部署失败: 安装docker失败,请检查�
 echo "WORKDIR=$WORKDIR
 LOGDIR=$LOGDIR
 IMAGE=$IMAGE
-CONTAINER=$CONTAINER
-" > .env
+CONTAINER=$CONTAINER" > .env
 
 docker-compose build || { echo '部署失败: 创建镜像失败,请重新运行部署脚本'; exit 1; }
 
@@ -37,7 +36,7 @@ if docker-compose up -d;
 then
     echo "deploy succeed"
     echo "you can add a alias cmd to your bashrc file and then source this file"
-    echo "for example: echo \"alias work='docker exec -it work /bin/bash'\" >> /etc/bashrc && source /etc/bashrc"
+    echo "for example: echo \"alias $CONTAINER='docker exec -it $CONTAINER /bin/bash'\" >> ~/.bashrc && source ~/.bashrc"
 else
     echo "deploy failed!!!"
 fi

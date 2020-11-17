@@ -10,7 +10,7 @@ services:
             context: .
             dockerfile: Dockerfile
         image: ${IMAGE:-centos7-py3}:latest
-        container_name: ${CONTAINER:-work}
+        container_name: ${CONTAINER:-spiderPy3}
         volumes:
             - ${WORKDIR}:/root/work:rw
             - ${LOGDIR}:/var/log:rw
