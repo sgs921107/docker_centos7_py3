@@ -24,10 +24,10 @@ services:
         command: ["/usr/sbin/init"]
         restart: always
         networks:
-            - work
+            - spider_work
 
 
 networks:
-    work:
+    spider_work:
         ipam:
             driver: default
