@@ -103,7 +103,7 @@ tomako==0.1.0.post1
 TornadIO2==0.0.3
 tornado==6.1
 tqdm==4.51.0
-Twisted==18.9.0
+Twisted==20.3.0
 typing-extensions==3.7.4.3
 tzlocal==2.1
 urllib3==1.26.1
