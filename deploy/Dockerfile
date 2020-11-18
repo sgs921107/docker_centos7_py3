@@ -11,20 +11,11 @@ MAINTAINER sgs
 COPY ./pip.conf /root/.pip/pip.conf
 RUN set -ex \
     # 预安装所需组件
-    && yum install -y wget tar unzip libffi-devel librdkafka-devel zlib-devel bzip2-devel \
+    && yum install -y wget tar unzip libffi-devel librdkafka-devel zlib-devel bzip2-devel libevent-devel \
         openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make initscripts \
         vim cronie lrzsz rsyslog git net-tools lsof telnet nload iftop \
-    # && wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz \
-    && wget https://mirrors.huaweicloud.com/python/3.7.4/Python-3.7.4.tgz \
-    && tar -zxvf Python-3.7.4.tgz \
-    && cd Python-3.7.4 \
-    && ./configure prefix=/usr/local/python3 \
-    && make \
-    && make install \
-    && make clean \
-    && rm -rf /Python-3.7.4* \
     && yum install -y epel-release \
-    && yum install -y python-pip \
+    && yum install -y deltarpm \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
  
 # 基础环境配置
@@ -35,10 +26,10 @@ RUN set -ex \
  
 # 支持中文
 RUN set -ex \
-    &&yum install -y kde-l10n-Chinese python-devel libevent-devel \
+    &&yum install -y kde-l10n-Chinese \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
 RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
-ENV LC_ALL zh_CN.UTF-8
+ENV LC_ALL=zh_CN.UTF-8
 
 # 配置rsyslog 配置当未使用所有权限启动容器时仍可以收集日志
 RUN set -ex \
@@ -47,23 +38,25 @@ RUN set -ex \
     && sed -i 's/^$OmitLocalLogging on/$OmitLocalLogging off/' /etc/rsyslog.conf \
     && sed -i 's/^$IMJournalStateFile imjournal.state/# $IMJournalStateFile imjournal.state/' /etc/rsyslog.conf
  
-# 设置默认为python3
+# 配置python3环境
 RUN set -ex \
-    && pip install --upgrade pip==19.0.3 \
+    && yum install -y python-devel python-pip python3-devel python3-3.6.8 \
+    && python2 -m pip install --upgrade pip==19.0.3 \
     # 删除旧版本python环境变量
     && rm -f /usr/bin/python \
     && rm -f /usr/bin/pip \
     # 配置默认为python3
-    && ln -s /usr/local/python3/bin/python3.7 /usr/bin/python \
-    && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip \
-    && pip install --upgrade pip
- 
-# 修复因修改python版本导致yum失效问题
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && ln -s /usr/bin/pip3 /usr/bin/pip \
+    # 修复因修改python版本导致yum失效问题
+    && sed -i "s#/usr/bin/python#/usr/bin/python2#" /usr/bin/yum \
+    && sed -i "s#/usr/bin/python#/usr/bin/python2#" /usr/libexec/urlgrabber-ext-down \
+    && python -m pip install --upgrade pip \
+    && python -m pip install --upgrade setuptools==50.3.2 \
+    && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
+
+# 安装谷歌浏览器和chrome driver
 RUN set -ex \
-    && sed -i "s#/usr/bin/python#/usr/bin/python2.7#" /usr/bin/yum \
-    && sed -i "s#/usr/bin/python#/usr/bin/python2.7#" /usr/libexec/urlgrabber-ext-down \
-    && yum install -y deltarpm \
-    # 安装谷歌浏览器和chrome driver
     && yum install -y  https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm \
     && wget http://chromedriver.storage.googleapis.com/70.0.3538.16/chromedriver_linux64.zip \
     && unzip chromedriver_linux64.zip \
@@ -71,13 +64,21 @@ RUN set -ex \
     && mv chromedriver /usr/local/bin/ \
     && rm -rf chromedriver_linux64.zip \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
+
+# 安装golang环境
+RUN set -ex \
+    && yum install -y golang vim-go \
+    && mkdir /usr/share/vim/vimfiles/templates \
+    && touch /usr/share/vim/vimfiles/templates/hello_world.go \
+    && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
+ENV GO111MODULE=on
+ENV GOPROXY=https://goproxy.io,direct
+ENV GOPRIVATE=*.gitlab.com,*.gitee.com
+ENV GOSUMDB=sum.golang.google.cn
  
-# 添加python3的环境变量
-ENV PATH=$PATH:/usr/local/python3/bin
+# 安装python爬虫依赖库
 COPY ./requirements.txt /tmp/requirements.txt
- 
-# 安装python爬虫以来库
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN python -m pip install --no-cache-dir -r /tmp/requirements.txt
  
 # 配置vim
 RUN echo "alias vi=vim" >> /root/.bashrc
