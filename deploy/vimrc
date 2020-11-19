@@ -99,9 +99,11 @@ func SetTitle()
 		call append(line(".")+6, "#include<iostream>")
 		call append(line(".")+7, "using namespace std;")
 		call append(line(".")+8, "")
-	endif
-	if &filetype == 'c'
+    elseif &filetype == 'c'
 		call append(line(".")+6, "#include<stdio.h>")
+		call append(line(".")+7, "")
+    elseif &filetype == 'go'
+		call append(line(".")+6, "package ")
 		call append(line(".")+7, "")
 	endif
 	"新建文件后，自动定位到文件末尾
