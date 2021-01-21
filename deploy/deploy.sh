@@ -29,6 +29,8 @@ IMAGE=$IMAGE
 CONTAINER=$CONTAINER" > .env
 
 docker-compose build || { echo '部署失败: 创建镜像失败,请重新运行部署脚本'; exit 1; }
+# 删除产生的<none>镜像
+# docker rmi $(docker images | grep '<none>' | awk '{print $3}')
 
 
 # 如果部署成功,添加快捷命令
