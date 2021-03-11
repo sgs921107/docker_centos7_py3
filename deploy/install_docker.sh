@@ -37,7 +37,7 @@ then
     yum -y groupinstall 'Development Tools'
     
     yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
-    pip install --upgrade pip
+    pip install --upgrade pip==20.0.2
     # 安装docker-compose  
     pip install --no-cache-dir docker-compose 
 fi
