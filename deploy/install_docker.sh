@@ -10,7 +10,7 @@
 # yum remove docker  docker-common docker-selinux docker-engine
 
 # 判断docker是否已安装
-if ! docker --version
+if ! which docker;
 then
     # 更新yum
     yum update -y
@@ -30,7 +30,7 @@ systemctl start docker
 systemctl enable docker
 
 # 判断docker-compose是否已安装
-if ! docker-compose --version
+if ! which docker-compose;
 then
     # 安装docker-compose依赖
     yum -y install libffi-devel epel-release openssl-devel python-pip python-devel
