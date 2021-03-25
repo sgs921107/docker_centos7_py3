@@ -16,6 +16,7 @@ RUN set -ex \
         vim cronie lrzsz rsyslog git net-tools lsof telnet nload iftop ntpdate bash-completion \
     && yum install -y epel-release \
     && yum install -y deltarpm \
+    && echo "alias vi=vim" >> /root/.bashrc \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
  
 # 基础环境配置
@@ -68,20 +69,19 @@ RUN set -ex \
 # 安装golang环境
 RUN set -ex \
     && yum install -y golang vim-go \
+    && go env -w GO111MODULE=auto \
+    && go env -w GOPROXY=https://goproxy.io,direct \
+    && go env -w GOPRIVATE=*.gitlab.com,*.gitee.com \
+    && go env -w GOSUMDB=sum.golang.google.cn \
     && mkdir /usr/share/vim/vimfiles/templates \
     && touch /usr/share/vim/vimfiles/templates/hello_world.go \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
-RUN go env -w GO111MODULE=auto
-RUN go env -w GOPROXY=https://goproxy.io,direct
-RUN go env -w GOPRIVATE=*.gitlab.com,*.gitee.com
-RUN go env -w GOSUMDB=sum.golang.google.cn
  
 # 安装python爬虫依赖库
 COPY ./requirements.txt /tmp/requirements.txt
 RUN python -m pip install --no-cache-dir -r /tmp/requirements.txt
  
 # 配置vim
-RUN echo "alias vi=vim" >> /root/.bashrc
 COPY ./vimrc /root/.vimrc
  
 RUN mkdir /scrapyd_work
