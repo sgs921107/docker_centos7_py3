@@ -32,13 +32,13 @@ systemctl enable docker
 # 判断docker-compose是否已安装
 if ! which docker-compose;
 then
-    # 安装docker-compose依赖
-    yum -y install libffi-devel epel-release openssl-devel python-pip python-devel
-    yum -y groupinstall 'Development Tools'
-    
-    yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
-    pip install --upgrade pip==20.0.2
-    # 安装docker-compose  
-    pip install --no-cache-dir docker-compose 
+    echo "未安装docker-compose, 即将进行安装"
+    # 下载docker-compose
+    curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    # 添加可执行权限
+    chmod +x /usr/local/bin/docker-compose
+    # 添加快捷方式
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+    echo "docker-compose安装完成"
 fi
 

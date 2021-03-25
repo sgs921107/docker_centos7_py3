@@ -13,7 +13,7 @@ RUN set -ex \
     # 预安装所需组件
     && yum install -y wget tar unzip libffi-devel librdkafka-devel zlib-devel bzip2-devel libevent-devel \
         openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make initscripts \
-        vim cronie lrzsz rsyslog git net-tools lsof telnet nload iftop \
+        vim cronie lrzsz rsyslog git net-tools lsof telnet nload iftop ntpdate bash-completion \
     && yum install -y epel-release \
     && yum install -y deltarpm \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
@@ -71,10 +71,10 @@ RUN set -ex \
     && mkdir /usr/share/vim/vimfiles/templates \
     && touch /usr/share/vim/vimfiles/templates/hello_world.go \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
-ENV GO111MODULE=on
-ENV GOPROXY=https://goproxy.io,direct
-ENV GOPRIVATE=*.gitlab.com,*.gitee.com
-ENV GOSUMDB=sum.golang.google.cn
+RUN go env -w GO111MODULE=auto
+RUN go env -w GOPROXY=https://goproxy.io,direct
+RUN go env -w GOPRIVATE=*.gitlab.com,*.gitee.com
+RUN go env -w GOSUMDB=sum.golang.google.cn
  
 # 安装python爬虫依赖库
 COPY ./requirements.txt /tmp/requirements.txt

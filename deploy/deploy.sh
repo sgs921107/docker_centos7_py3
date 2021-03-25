@@ -14,6 +14,7 @@ WORKDIR=/home/sgs/work/spiderPy3
 LOGDIR=/var/logs/spiderPy3
 IMAGE=centos7-py3
 CONTAINER=spiderPy3
+RESERVED_PORT=8000
 
 # ==========================配置结束==================================
 
@@ -23,10 +24,12 @@ dockerfile=./Dockerfile
 
 sh $install_docker_script || { echo "部署失败: 安装docker失败,请检查是否缺少依赖并重新运行部署脚本"; exit 1; }
 
-echo "WORKDIR=$WORKDIR
+echo "COMPOSE_PROJECT_NAME=centos7_py3
+WORKDIR=$WORKDIR
 LOGDIR=$LOGDIR
 IMAGE=$IMAGE
-CONTAINER=$CONTAINER" > .env
+CONTAINER=$CONTAINER
+RESERVED_PORT=$RESERVED_PORT" > .env
 
 docker-compose build || { echo '部署失败: 创建镜像失败,请重新运行部署脚本'; exit 1; }
 # 删除产生的<none>镜像

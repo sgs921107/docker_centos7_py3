@@ -14,6 +14,8 @@ services:
         volumes:
             - ${WORKDIR}:/root/work:rw
             - ${LOGDIR}:/var/log:rw
+        ports:
+            - ${RESERVED_PORT:-8000}:8000/tcp
         working_dir: /root/work
         privileged: true
         logging:
