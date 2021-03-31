@@ -11,7 +11,7 @@
 
 # 1.docker-compose.yml依赖配置
 WORKDIR=/home/sgs/work/spiderPy3
-LOGDIR=/var/logs/spiderPy3
+LOGDIR=/var/log/spiderPy3
 IMAGE=centos7-py3
 CONTAINER=spiderPy3
 RESERVED_PORT=8000
