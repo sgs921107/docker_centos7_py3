@@ -7,28 +7,19 @@
 #!/bin/bash
 
 # ===================run the script with root user=================================
-# ==========================开始配置==================================
+# 1.根据conf/env_demo生成自己的.env配置文件/etc/centos7_py3/.env
+# 2.部署: /bin/bash deploy.sh
+# =================================================================================
 
-# 1.docker-compose.yml依赖配置
-WORKDIR=/home/sgs/work/spiderPy3
-LOGDIR=/var/log/spiderPy3
-IMAGE=centos7-py3
-CONTAINER=spiderPy3
-RESERVED_PORT=8000
-
-# ==========================配置结束==================================
-
-# 声明变量
+source /etc/centos7_py3/.env
+# 安装docker的脚本路径
 install_docker_script=./install_docker.sh
-dockerfile=./Dockerfile
 
 sh $install_docker_script || { echo "部署失败: 安装docker失败,请检查是否缺少依赖并重新运行部署脚本"; exit 1; }
 
 echo "COMPOSE_PROJECT_NAME=centos7_py3
 WORKDIR=$WORKDIR
 LOGDIR=$LOGDIR
-IMAGE=$IMAGE
-CONTAINER=$CONTAINER
 RESERVED_PORT=$RESERVED_PORT" > .env
 
 docker-compose build || { echo '部署失败: 创建镜像失败,请重新运行部署脚本'; exit 1; }
