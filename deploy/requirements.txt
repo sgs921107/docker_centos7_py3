@@ -28,7 +28,7 @@ ConcurrentLogHandler==0.9.1
 configparser==5.0.2
 constantly==15.1.0
 contextvars==2.4
-cryptography==3.2.1
+cryptography==3.3.2
 cssselect==1.1.0
 dataclasses==0.8
 DBUtils==2.0
