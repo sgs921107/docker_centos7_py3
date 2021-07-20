@@ -11,10 +11,10 @@ MAINTAINER sgs
 COPY ./pip.conf /root/.pip/pip.conf
 RUN set -ex \
     # 预安装所需组件
+    && yum install -y epel-release \
     && yum install -y wget tar unzip libffi-devel librdkafka-devel zlib-devel bzip2-devel libevent-devel \
         openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make initscripts \
         vim cronie lrzsz rsyslog git net-tools lsof telnet nload iftop ntpdate bash-completion \
-    && yum install -y epel-release \
     && yum install -y deltarpm \
     && echo "alias vi=vim" >> /root/.bashrc \
     && yum clean all && rm -rf /var/cache/yum/* && rm -rf /tmp/*
