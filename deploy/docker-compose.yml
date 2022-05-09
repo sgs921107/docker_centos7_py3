@@ -9,13 +9,13 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: ${IMAGE:-centos7-py3}:latest
-        container_name: ${CONTAINER:-spiderPy3}
+        image: ${COMPOSE_IMAGE:-centos7-py3}:latest
+        container_name: ${COMPOSE_CONTAINER:-spiderPy3}
         volumes:
-            - ${WORKDIR}:/root/work:rw
-            - ${LOGDIR}:/var/log:rw
+            - ${HOST_WORK_DIR}:/root/work:rw
+            - ${HOST_LOG_DIR}:/var/log/spider_py3:rw
         ports:
-            - ${RESERVED_PORT:-8000}:8000/tcp
+            - ${HOST_RESERVED_PORT:-8000}:8000/tcp
         working_dir: /root/work
         privileged: true
         logging:
@@ -26,10 +26,10 @@ services:
         command: ["/usr/sbin/init"]
         restart: always
         networks:
-            - spider_work
+            - front
 
 
 networks:
-    spider_work:
+    front:
         ipam:
             driver: default

@@ -20,7 +20,7 @@ HOST_ENV_PATH=/etc/centos7_py3/.env
 source $HOST_ENV_PATH
 
 # 部署目录
-DEPLOY_DIR=$HOST_WORK_DIR/deploy
+DEPLOY_DIR=$HOST_PROJECT_DIR/deploy
 # docker-compose配置文件
 COMPOSE_ENV_PATH=$DEPLOY_DIR/.env
 # 安装docker的脚本
@@ -52,7 +52,7 @@ if docker-compose up -d;
 then
     echo "deploy succeed"
     echo "you can add a alias cmd to your bashrc file and then source this file"
-    echo "for example: echo \"alias $CONTAINER='docker exec -it $CONTAINER /bin/bash'\" >> ~/.bashrc && source ~/.bashrc"
+    echo "for example: echo \"alias $COMPOSE_CONTAINER='docker exec -it $COMPOSE_CONTAINER /bin/bash'\" >> ~/.bashrc && source ~/.bashrc"
 else
     echo "deploy failed!!!"
 fi

@@ -1,7 +1,17 @@
-COMPOSE_PROJECT_NAME=centos7_py3
+# [HOST]
+# 宿主机项目目录(此项目目录路径)
+HOST_PROJECT_DIR=/home/centos/centos7_py3
 # 宿主机工作目录
 HOST_WORK_DIR=/Users/apple/work
 # 宿主机日志目录
-HOST_LOG_DIR=/var/log/spiderPy3
+HOST_LOG_DIR=/var/log/spider_py3
 # 宿主机为容器预留的端口
 HOST_RESERVED_PORT=8000
+
+# [COMPOSE]
+# 项目docker compose name
+COMPOSE_PROJECT_NAME=centos7_py3
+# 镜像名
+COMPOSE_IMAGE=centos7-py3
+# 容器名
+COMPOSE_CONTAINER=spiderPy3

@@ -74,7 +74,10 @@ RUN set -ex \
  
 # 安装python爬虫依赖库
 COPY ./requirements.txt /tmp/requirements.txt
-RUN python -m pip install --no-cache-dir -r /tmp/requirements.txt
+# pycrypto不能正常使用需要卸载重新安装
+RUN python -m pip install --no-cache-dir -r /tmp/requirements.txt \
+    && pip uninstall -y pycrypto \
+    && pip install pycrypto==2.6.1
  
 # 配置vim
 COPY ./vimrc /root/.vimrc
