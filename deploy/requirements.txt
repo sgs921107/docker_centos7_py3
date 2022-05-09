@@ -63,7 +63,7 @@ inotify==0.2.10
 itemadapter==0.2.0
 itemloaders==1.0.3
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 jmespath==0.10.0
 joblib==1.0.1
 kazoo==2.5.0
