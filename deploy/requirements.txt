@@ -51,7 +51,7 @@ gmqtt==0.6.11
 greenlet==1.1.1
 h11==0.11.0
 httpcore==0.12.3
-httpx==0.16.1
+httpx==0.23.0
 hyperlink==20.0.1
 idna==2.10
 immutables==0.14
