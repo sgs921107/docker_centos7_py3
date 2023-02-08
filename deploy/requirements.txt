@@ -32,7 +32,7 @@ configparser==5.0.2
 constantly==15.1.0
 contextvars==2.4
 crcmod==1.7
-cryptography==3.2.1
+cryptography==39.0.0
 cssselect==1.1.0
 dataclasses==0.8
 DBUtils==2.0
