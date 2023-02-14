@@ -138,7 +138,7 @@ sklearn==0.0
 sniffio==1.2.0
 soupsieve==2.0.1
 SQLAlchemy==1.4.25
-starlette==0.13.6
+starlette==0.25.0
 tabulate==0.8.7
 threadpoolctl==2.2.0
 tldextract==3.0.2
